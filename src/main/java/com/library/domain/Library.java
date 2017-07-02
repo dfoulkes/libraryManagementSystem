@@ -2,6 +2,9 @@ package com.library.domain;
 
 
 
+import com.library.enums.Role;
+import com.library.exceptions.NoPermissions;
+
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -36,9 +39,14 @@ public class Library {
         users.add(user);
     }
 
-    public List<Book> overDueBooks(){
+    public List<Book> overDueBooks(User user) throws NoPermissions {
+        if(!user.getRole().equals(Role.ADMIN)){
+            throw new NoPermissions();
+        }
+        
         return books.stream()
-                    .filter(book -> isCheckedOut(book))
+                    .filter(book -> book.getTicket() != null)
+                    .filter(book ->  isCheckedOut(book))
                     .filter(checkout -> getDueDate(checkout).toEpochSecond() < getCurrentEpochTime())
                     .collect(toList());
     }

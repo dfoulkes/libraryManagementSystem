@@ -6,8 +6,13 @@ import com.library.domain.Book;
 import com.library.domain.CheckoutTicket;
 import com.library.domain.Library;
 import com.library.domain.User;
+import com.library.enums.Role;
+import com.library.exceptions.NoPermissions;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
@@ -43,14 +48,14 @@ public class LibraryTest {
 
     @Test
     public void shouldBeAbleToAddUser(){
-        library.addUser(aValidUser());
+        library.addUser(aValidAdmin());
         assertThat(library.getUsers().size(), is(1));
     }
 
     @Test
     public void ShouldAllowUserToCheckoutBook(){
         library.addBook(aValidBook());
-        CheckoutTicket ticket = library.checkout(aValidUser(),aValidBook());
+        CheckoutTicket ticket = library.checkout(aValidAdmin(),aValidBook());
         assertThat(library.getBook(1).get().getTicket().getCheckout(),is(true));
         assertThat(ticket.getCheckout(),is(true));
     }
@@ -58,26 +63,74 @@ public class LibraryTest {
     @Test
     public void shouldNotBeAbleToCheckoutSameBookTwice(){
         library.addBook(aValidBook());
-        CheckoutTicket firstTicket = library.checkout(aValidUser(),aValidBook());
+        CheckoutTicket firstTicket = library.checkout(aValidAdmin(),aValidBook());
         assertThat(firstTicket.getCheckout(),is(true));
-        CheckoutTicket secondTicket = library.checkout(anotherValidUser(),aValidBook());
+        CheckoutTicket secondTicket = library.checkout(aValidUser(),aValidBook());
         assertThat(secondTicket.getCheckout(),is(false));
-        assertThat(library.getBook(aValidBook().getLibraryReferenceNumber()).get().getTicket().getUser().getUsername(), is(aValidUser().getUsername()));
+        assertThat(library.getBook(aValidBook().getLibraryReferenceNumber()).get().getTicket().getUser().getUsername(), is(aValidAdmin().getUsername()));
     }
 
-    private User aValidUser() {
+    @Test
+    public void shouldAllowAdminsToSeeBooksOverdue() throws NoPermissions {
+        setupSmallLibary();
+        checkoutAndMakeBookOverdue();
+        List<Book> collection = library.overDueBooks(aValidAdmin());
+        assertThat(collection.size(), is(1));
+    }
+
+    @Test(expected = NoPermissions.class)
+    public void shouldNotAllowUsersToViewOverDueBooks() throws NoPermissions {
+        setupSmallLibary();
+        checkoutAndMakeBookOverdue();
+        List<Book> collection = library.overDueBooks(aValidUser());
+        assertThat(collection.size(), is(1));
+    }
+
+    private void checkoutAndMakeBookOverdue() {
+        library.checkout(aValidUser(),aValidBook());
+        LocalDateTime overDueDate = LocalDateTime.now().minusDays(4);
+        library.getBook(aValidBook().getLibraryReferenceNumber()).get().getTicket().setCheckedOutOn(overDueDate);
+    }
+
+    private void setupSmallLibary() {
+        library.addBook(BookBuilder.getBuilder()
+                .withLibraryReferenceNumber(1)
+                .withTitle("Java for Beginners")
+                .withIsdn("isdn1")
+                .build());
+
+        library.addBook(BookBuilder.getBuilder()
+                .withLibraryReferenceNumber(2)
+                .withTitle("C++ for Beginners")
+                .withIsdn("isdn2")
+                .build());
+
+        library.addBook(BookBuilder.getBuilder()
+                .withLibraryReferenceNumber(3)
+                .withTitle("Objective C for Beginners")
+                .withIsdn("isdn3")
+                .build());
+
+        library.addUser(aValidUser());
+        library.addUser(aValidAdmin());
+
+    }
+
+    private User aValidAdmin() {
         return UserBuilder.getBuilder()
                 .withId(1L)
                 .withUsername("dan")
                 .withPassword("password")
+                .withRole(Role.ADMIN)
                 .build();
     }
 
-    private User anotherValidUser() {
+    private User aValidUser() {
         return UserBuilder.getBuilder()
                 .withId(2L)
                 .withUsername("little")
                 .withPassword("timmy")
+                .withRole(Role.USER)
                 .build();
     }
 
@@ -88,6 +141,4 @@ public class LibraryTest {
                 .withIsdn("isdn12345")
                 .build();
     }
-
-
 }

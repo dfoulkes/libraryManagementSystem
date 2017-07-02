@@ -1,6 +1,7 @@
 package com.library.builders;
 
 import com.library.domain.User;
+import com.library.enums.Role;
 
 /**
  * Created by danfoulkes on 02/07/2017.
@@ -12,6 +13,7 @@ public class UserBuilder {
     private Long id;
     private String username;
     private String password;
+    private Role role;
 
     public  UserBuilder withUsername(String username){
         this.username = username;
@@ -32,6 +34,7 @@ public class UserBuilder {
         User user = new User(id);
         user.setPassword(password);
         user.setUsername(username);
+        user.setRole(role);
         return user;
     }
 
@@ -40,5 +43,8 @@ public class UserBuilder {
     }
 
 
-
+    public UserBuilder withRole(Role role) {
+        this.role = role;
+        return this;
+    }
 }
