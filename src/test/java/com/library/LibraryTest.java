@@ -7,7 +7,7 @@ import com.library.domain.CheckoutTicket;
 import com.library.domain.Library;
 import com.library.domain.User;
 import com.library.enums.Role;
-import com.library.exceptions.NoPermissions;
+import com.library.exceptions.invalidPermissions;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -81,15 +81,15 @@ public class LibraryTest {
     }
 
     @Test
-    public void shouldAllowAdminsToSeeBooksOverdue() throws NoPermissions {
+    public void shouldAllowAdminsToSeeBooksOverdue() throws invalidPermissions {
         setupSmallLibrary();
         checkoutAndMakeBookOverdue();
         List<Book> collection = library.overDueBooks(aValidAdmin());
         assertThat(collection.size(), is(1));
     }
 
-    @Test(expected = NoPermissions.class)
-    public void shouldNotAllowUsersToViewOverDueBooks() throws NoPermissions {
+    @Test(expected = invalidPermissions.class)
+    public void shouldNotAllowUsersToViewOverDueBooks() throws invalidPermissions {
         setupSmallLibrary();
         checkoutAndMakeBookOverdue();
         List<Book> collection = library.overDueBooks(aValidUser());

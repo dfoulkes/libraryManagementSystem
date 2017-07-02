@@ -3,7 +3,7 @@ package com.library.domain;
 
 
 import com.library.enums.Role;
-import com.library.exceptions.NoPermissions;
+import com.library.exceptions.invalidPermissions;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -22,9 +22,9 @@ import static java.util.stream.Collectors.toList;
  */
 public class Library {
 
-    Set<Book> books = new HashSet<>();
-    Set<User> users = new HashSet<>();
-    ZoneId zoneId = ZoneId.systemDefault();
+    private Set<Book> books = new HashSet<>();
+    private Set<User> users = new HashSet<>();
+    private ZoneId zoneId = ZoneId.systemDefault();
     private final Long MAXIMUM_CHECKOUT_TIME = 3L;
 
     public void addBook(Book book){
@@ -39,11 +39,12 @@ public class Library {
         users.add(user);
     }
 
-    public List<Book> overDueBooks(User user) throws NoPermissions {
+    public List<Book> overDueBooks(User user) throws invalidPermissions {
+        //if not an admin throw exception.
         if(!user.getRole().equals(Role.ADMIN)){
-            throw new NoPermissions();
+            throw new invalidPermissions();
         }
-        
+        //loop over the books set, filter those never checked out, filter only books that are checked out, filter on books that are overdue.
         return books.stream()
                     .filter(book -> book.getTicket() != null)
                     .filter(book ->  isCheckedOut(book))

@@ -5,6 +5,6 @@ package com.library.exceptions;
  * Project: libraryManagementSystem
  * Package: com.library.exceptions
  */
-public class NoPermissions extends Throwable {
+public class invalidPermissions extends Throwable {
 
 }
