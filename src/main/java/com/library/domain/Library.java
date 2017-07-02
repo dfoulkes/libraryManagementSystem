@@ -106,4 +106,29 @@ public class Library {
     public Set<User> getUsers() {
         return users;
     }
+
+
+    /**
+     *
+     * This could also of been written;
+     *
+     *   for(Book i : books){
+     *       if(i.getLibraryReferenceNumber().equals(book.getLibraryReferenceNumber()){
+     *              if(user.getId().equals(i..getTicket().getUser().getId()){
+     *                  i.getTicket().setCheckout(false);
+     *              }
+     *   }
+     *
+     * Since that way would involve a series of nested if statements (Code Smell) I decided to
+     * use lambdas.
+     *
+     * @param user
+     * @param book
+     */
+    public void checkIn(User user, Book book) {
+       getBook(book.getLibraryReferenceNumber())
+                .filter(foundBook -> foundBook.getTicket() != null)
+                    .filter(belongsToUser -> belongsToUser.getTicket().getUser().getId().equals(user.getId()))
+                        .ifPresent(checkIn -> checkIn.getTicket().setCheckout(false));
+    }
 }

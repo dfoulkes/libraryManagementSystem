@@ -71,8 +71,18 @@ public class LibraryTest {
     }
 
     @Test
+    public void shouldAllowAUserToReturnABookTheBookShouldThenBecomeAvailable(){
+        setupSmallLibrary();
+        Book book = library.getBook(1).get();
+        library.checkout(aValidUser(),book);
+        assertThat(library.getBook(1).get().getTicket().getCheckout(),is(true));
+        library.checkIn(aValidUser(), aValidBook());
+        assertThat(library.getBook(1).get().getTicket().getCheckout(),is(false));
+    }
+
+    @Test
     public void shouldAllowAdminsToSeeBooksOverdue() throws NoPermissions {
-        setupSmallLibary();
+        setupSmallLibrary();
         checkoutAndMakeBookOverdue();
         List<Book> collection = library.overDueBooks(aValidAdmin());
         assertThat(collection.size(), is(1));
@@ -80,7 +90,7 @@ public class LibraryTest {
 
     @Test(expected = NoPermissions.class)
     public void shouldNotAllowUsersToViewOverDueBooks() throws NoPermissions {
-        setupSmallLibary();
+        setupSmallLibrary();
         checkoutAndMakeBookOverdue();
         List<Book> collection = library.overDueBooks(aValidUser());
         assertThat(collection.size(), is(1));
@@ -92,7 +102,7 @@ public class LibraryTest {
         library.getBook(aValidBook().getLibraryReferenceNumber()).get().getTicket().setCheckedOutOn(overDueDate);
     }
 
-    private void setupSmallLibary() {
+    private void setupSmallLibrary() {
         library.addBook(BookBuilder.getBuilder()
                 .withLibraryReferenceNumber(1)
                 .withTitle("Java for Beginners")
