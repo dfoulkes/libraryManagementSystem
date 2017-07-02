@@ -60,8 +60,9 @@ public class LibraryTest {
         library.addBook(aValidBook());
         CheckoutTicket firstTicket = library.checkout(aValidUser(),aValidBook());
         assertThat(firstTicket.getCheckout(),is(true));
-        CheckoutTicket secondTicket = library.checkout(aValidUser(),aValidBook());
+        CheckoutTicket secondTicket = library.checkout(anotherValidUser(),aValidBook());
         assertThat(secondTicket.getCheckout(),is(false));
+        assertThat(library.getBook(aValidBook().getLibraryReferenceNumber()).get().getTicket().getUser().getUsername(), is(aValidUser().getUsername()));
     }
 
     private User aValidUser() {
@@ -69,6 +70,14 @@ public class LibraryTest {
                 .withId(1L)
                 .withUsername("dan")
                 .withPassword("password")
+                .build();
+    }
+
+    private User anotherValidUser() {
+        return UserBuilder.getBuilder()
+                .withId(2L)
+                .withUsername("little")
+                .withPassword("timmy")
                 .build();
     }
 

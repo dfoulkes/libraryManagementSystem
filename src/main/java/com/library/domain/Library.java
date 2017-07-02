@@ -65,12 +65,14 @@ public class Library {
      * @param book
      */
     public CheckoutTicket checkout(User user, Book book){
-        return getBook(book.getLibraryReferenceNumber())
-                .map(x -> {x.checkout(new CheckoutTicket(user, LocalDateTime.now(), Boolean.TRUE)); return x.getTicket();})
-                .orElseGet(() -> {return new CheckoutTicket(user, LocalDateTime.now(), Boolean.FALSE);});
-              //  .ifPresent(checkoutBook -> checkoutBook.checkout(new CheckoutTicket(user, LocalDateTime.now(), Boolean.TRUE)));
-                                                                                                                                
+        Optional<Book> checkingOutBook =  getBook(book.getLibraryReferenceNumber())
+                        .filter(foundBook -> foundBook.getTicket() == null || Boolean.FALSE.equals(foundBook.getTicket().getCheckout()));
+        if(checkingOutBook.isPresent()){
+           return checkingOutBook.get().checkout(new CheckoutTicket(user, LocalDateTime.now(),Boolean.TRUE));
+        }
+        return new CheckoutTicket(user, LocalDateTime.now(),Boolean.FALSE);
     }
+
 
     public Optional<Book> getBook(int i) {
 

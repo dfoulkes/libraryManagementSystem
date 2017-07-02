@@ -45,8 +45,9 @@ public class Book {
     return false;
     }
 
-    public void checkout(CheckoutTicket checkedOut){
+    public CheckoutTicket checkout(CheckoutTicket checkedOut){
         this.checkedOut = checkedOut;
+        return checkedOut;
     }
 
     public CheckoutTicket getTicket() {
