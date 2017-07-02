@@ -25,7 +25,7 @@ import static org.junit.Assert.*;
 public class LibraryTest {
 
 
-    Library library;
+    private Library library;
 
     @Before
     public void setup(){
@@ -56,7 +56,7 @@ public class LibraryTest {
     public void ShouldAllowUserToCheckoutBook(){
         library.addBook(aValidBook());
         CheckoutTicket ticket = library.checkout(aValidAdmin(),aValidBook());
-        assertThat(library.getBook(1).get().getTicket().getCheckout(),is(true));
+        assertThat(library.getBook(1).orElse(null).getTicket().getCheckout(),is(true));
         assertThat(ticket.getCheckout(),is(true));
     }
 
@@ -67,17 +67,17 @@ public class LibraryTest {
         assertThat(firstTicket.getCheckout(),is(true));
         CheckoutTicket secondTicket = library.checkout(aValidUser(),aValidBook());
         assertThat(secondTicket.getCheckout(),is(false));
-        assertThat(library.getBook(aValidBook().getLibraryReferenceNumber()).get().getTicket().getUser().getUsername(), is(aValidAdmin().getUsername()));
+        assertThat(library.getBook(aValidBook().getLibraryReferenceNumber()).orElse(null).getTicket().getUser().getUsername(), is(aValidAdmin().getUsername()));
     }
 
     @Test
     public void shouldAllowAUserToReturnABookTheBookShouldThenBecomeAvailable(){
         setupSmallLibrary();
-        Book book = library.getBook(1).get();
+        Book book = library.getBook(1).orElse(null);
         library.checkout(aValidUser(),book);
-        assertThat(library.getBook(1).get().getTicket().getCheckout(),is(true));
+        assertThat(library.getBook(1).orElse(null).getTicket().getCheckout(),is(true));
         library.checkIn(aValidUser(), aValidBook());
-        assertThat(library.getBook(1).get().getTicket().getCheckout(),is(false));
+        assertThat(library.getBook(1).orElse(null).getTicket().getCheckout(),is(false));
     }
 
     @Test
@@ -99,7 +99,7 @@ public class LibraryTest {
     private void checkoutAndMakeBookOverdue() {
         library.checkout(aValidUser(),aValidBook());
         LocalDateTime overDueDate = LocalDateTime.now().minusDays(4);
-        library.getBook(aValidBook().getLibraryReferenceNumber()).get().getTicket().setCheckedOutOn(overDueDate);
+        library.getBook(aValidBook().getLibraryReferenceNumber()).orElse(null).getTicket().setCheckedOutOn(overDueDate);
     }
 
     private void setupSmallLibrary() {
