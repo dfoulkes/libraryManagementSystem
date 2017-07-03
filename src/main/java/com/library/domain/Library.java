@@ -3,6 +3,7 @@ package com.library.domain;
 
 
 import com.library.enums.Role;
+import com.library.exceptions.UserNotFound;
 import com.library.exceptions.invalidPermissions;
 
 import java.time.LocalDateTime;
@@ -131,5 +132,13 @@ public class Library {
                 .filter(foundBook -> foundBook.getTicket() != null)
                     .filter(belongsToUser -> belongsToUser.getTicket().getUser().getId().equals(user.getId()))
                         .ifPresent(checkIn -> checkIn.getTicket().setCheckout(false));
+    }
+
+    public User login(String username, String password) throws UserNotFound {
+        return users.stream()
+                        .filter(user -> user.getUsername().equals(username))
+                        .filter(user -> user.getPassword().equals(password))
+                                .findFirst().orElseThrow(UserNotFound::new);
+
     }
 }

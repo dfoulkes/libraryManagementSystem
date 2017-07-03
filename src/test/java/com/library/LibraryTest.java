@@ -7,6 +7,7 @@ import com.library.domain.CheckoutTicket;
 import com.library.domain.Library;
 import com.library.domain.User;
 import com.library.enums.Role;
+import com.library.exceptions.UserNotFound;
 import com.library.exceptions.invalidPermissions;
 import org.junit.Before;
 import org.junit.Test;
@@ -94,6 +95,15 @@ public class LibraryTest {
         checkoutAndMakeBookOverdue();
         List<Book> collection = library.overDueBooks(aValidUser());
         assertThat(collection.size(), is(1));
+    }
+
+    @Test
+    public void shouldReturnUserWhenValidLogin() throws UserNotFound {
+        setupSmallLibrary();
+        User user = library.login("dan","password");
+        assertThat(user.getUsername(), is("dan"));
+        assertThat(user.getPassword(), is("password"));
+        assertThat(user.getRole(),is(Role.ADMIN));
     }
 
     private void checkoutAndMakeBookOverdue() {
