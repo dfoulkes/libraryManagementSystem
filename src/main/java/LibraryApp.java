@@ -26,6 +26,7 @@ public class LibraryApp {
 
 	public LibraryApp(){
 		library.addUser(UserBuilder.getBuilder().withId(1l).withUsername("dan").withPassword("password").withRole(Role.ADMIN).build());
+		library.addUser(UserBuilder.getBuilder().withId(1l).withUsername("user").withPassword("password").withRole(Role.USER).build());
 
 	}
 
@@ -60,11 +61,11 @@ public class LibraryApp {
 		String action = getAction(userMenu());
 		//show books
 		if (action.equals("1")) {
-			listBooks();
+			listBooksAvailable();
 		}
 		//check in book
 		else if (action.equals("2")) {
-			checkin();
+			checkIn();
 		}
 		//check in book
 		else if(action.equals("3")){
@@ -77,7 +78,7 @@ public class LibraryApp {
 		return exit;
 	}
 
-	private void checkin() {
+	private void checkIn() {
 		String action = getAction("Enter the id of your book");
 		Book book = null;
 		try {
@@ -89,6 +90,15 @@ public class LibraryApp {
 	}
 
 	private void checkedOut() {
+		String action = getAction("Enter the id of your book");
+		Book book = null;
+		try {
+			book = library.getBook(Integer.parseInt(action)).orElseThrow(noBookFoundException::new);
+			library.checkout(currentUser, book);
+			System.out.println("Book is checked out");
+		} catch (noBookFoundException e) {
+			System.out.println("Sorry.. could not find a book by this name");
+		}
 	}
 
 	private String userMenu() {
@@ -148,7 +158,16 @@ public class LibraryApp {
 	private void listBooks(){
 		Set<Book> booksList = library.getBooks();
 		System.out.println("----- Books in the Library ------");
-		booksList.stream().forEach(x -> displayBook(x));
+		booksList.stream()
+				.forEach(x -> displayBook(x));
+	}
+
+	private void listBooksAvailable(){
+		Set<Book> booksList = library.getBooks();
+		System.out.println("----- Books in the Library ------");
+		booksList.stream()
+				.filter(x -> x.getTicket() == null || Boolean.FALSE.equals(x.getTicket().getCheckout()))
+				.forEach(x -> displayBook(x));
 	}
 
 	private void displayBook(Book x) {
