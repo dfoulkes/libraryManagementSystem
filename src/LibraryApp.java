@@ -1,16 +1,9 @@
-import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 /**
  * This will host as the runtime for the new app.
  *
  * @author mr-mou
- *
- *
- * password&username must be changed to ID.
- *
- * the object can be serialized or something to save the data.
- *
+ * these objectc can be serialized or something to save the data.
  * user & admin can list all books in the library  using method listBooks()
  * user can check out books using method chekoutBook()
  * user can return a book using method returnBook()
@@ -19,569 +12,361 @@ import java.util.concurrent.TimeUnit;
  * admin can get user info with method printUserInfo()
  * admin can print a report of checked out books by using method printReport()
  *
- *
  */
+import javax.swing.*;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
 public class LibraryApp {
 	private static final int CHECKING = 10;
 	private static final int REGISTER = 0;
-	public static ArrayList<String> bookNames;
-	public static String command;
-	private static Scanner sc;
+	private static String command;
+	private static Scanner scanner;
 	private static String uUserName;
 	private static String uPassword;
-	public static String uTypeOfUse;
-
-	private static int objectIndex;
-
-
-	private static ArrayList<UserData> objectArrayList;
-	private static ArrayList<CheckedOutBooks> checkedOutBooks;
+	private static String uTypeOfUse;
+	private static int uUserIndex;
 	private static boolean usernameIsAvailable=true;
-
+	private static ArrayList<User> users;
+	private static ArrayList<Book> checkedOutBooks;
+	private static ArrayList<Book> libraryBooks;
 
 	/**
 	 * @param args the command line arguments
 	 */
 	public static void main(String[] args) {
-		sc = new Scanner(System.in);
+		scanner = new Scanner(System.in);
 		System.out.println("LibraryApp started...\n type 'help' to show list of commands");
+		JButton btn = new JButton();
+		btn.setSize(20,20);
+		libraryBooks = new ArrayList<Book>(0);
+		users = new ArrayList<User>(0);
+		checkedOutBooks = new ArrayList<Book>(0);
 
-
-		bookNames = new ArrayList<String>(0);
-		checkedOutBooks = new ArrayList<CheckedOutBooks>(0);
-		//adding some elements to bookNames ArrayList
-		int c = 0;
-		while (c < 10) {
-
-			bookNames.add("Book number:" + c);
-			c++;
+		for (int i=0; i<11; i++){
+			Book book = new Book("book:"+i,null, null);
+			libraryBooks.add(book);
 		}
-
-		objectArrayList = new ArrayList<UserData>();
 
 		register("user1" ,"userpass1", "user", REGISTER);
 		register("user2" ,"userpass2", "user", REGISTER);
 		register("admin1" ,"adminpass1", "admin", REGISTER);
-
-
-       /*int counter = 0;
-        while (counter != objectArrayList.size()) {
-            prntln((counter + 1) + ") " + objectArrayList.get(counter).getLoginUsernameData());
-            counter++;
-        }
-*/
-
-
-
-		login();
-
-
-
-
-
+       	login();
 	}
-
-
 	private static void adminStartScanning() {
-
 		if (uTypeOfUse.equals("admin")) {
-			command = sc.nextLine();
-			if (command.equals("listbooks")) {
+			command = scanner.nextLine();
+			switch (command) {
+				case "listbooks":
 
-				listBooks();
-				adminStartScanning();
+					listBooks();
+					adminStartScanning();
 
-			} else if (command.equals("addnewbook")) {
+					break;
+				case "addnewbook":
 
-				String name;
-				System.out.println("What is the book name?");
-				name = sc.nextLine();
-				addNewBook(name);
-				adminStartScanning();
+					String name;
+					System.out.println("What is the book mBookName?");
+					name = scanner.nextLine();
+					addNewBook(name);
+					adminStartScanning();
 
-			} else if (command.equals("help")) {
-				prntln(
-						"listbooks     to list all books which remaining in the library "
-								+ "\n" + "addnewbook    to add new book to the library"
-								+ "\n" + "printreport   to print report of checked out books"
-								+ "\n" + "register      to register new user"
-								+ "\n" + "getuserinfo   to get info of user by username"
-								+ "\n" + "logout        -"
+					break;
+				case "help":
 
+					System.out.println(
+							"listbooks     to list all books which remaining in the library "
+									+ "\n" + "addnewbook    to add new book to the library"
+									+ "\n" + "printreport   to print report of checked out books"
+									+ "\n" + "register      to register new user"
+									+ "\n" + "getuserinfo   to get info of user by username"
+									+ "\n" + "logout        -"
+					);
+					adminStartScanning();
 
-				);
-				adminStartScanning();
+					break;
+				case "printreport":
 
-			}else if (command.equals("printreport")) {
+					printReport();
+					adminStartScanning();
 
-				printReport();
-				adminStartScanning();
+					break;
+				case "register": {
 
-			}else if (command.equals("register")) {
+					String username;
+					String password = "";
+					String typeofuse = "";
+					System.out.println("register: enter new username");
+					username = scanner.nextLine();
+					register(username, password, typeofuse, CHECKING);
+					if (usernameIsAvailable) {
+						System.out.println("Register: enter new password");
+						password = scanner.nextLine();
 
-				String username; String password=""; String typeofuse="";
-				prntln("register: enter new username");
-				username=sc.nextLine();
-				register(username, password, typeofuse, CHECKING);
-				if (usernameIsAvailable) {
-					prntln("Register: enter new password");
-					password=sc.nextLine();
+						System.out.println("Register: enter type of  user");
+						typeofuse = scanner.nextLine();
+						register(username, password, typeofuse, REGISTER);
+					}
+					adminStartScanning();
 
-					prntln("Register: enter type of  user");
-					typeofuse = sc.nextLine();
-					register(username, password, typeofuse, REGISTER);
+					break;
 				}
+				case "getuserinfo": {
+
+					String username = scanner.nextLine();
+					printUserInfo(username);
+					adminStartScanning();
 
 
-				adminStartScanning();
+					break;
+				}
+				case "logout":
 
-			} else if (command.equals("getuserinfo")) {
-
-				String username=sc.nextLine();
-				printUserInfo(username);
-				adminStartScanning();
-
-
-			} else if (command.equals("logout")) {
-
-				prntln("logout succeed! ");
-				prntln("\n");
-				login();
-			} else {
-				//if unknown command
-				System.out.println(command + " is unknown command!");
-				adminStartScanning();
+					System.out.println("logout succeed! ");
+					System.out.println("\n");
+					login();
+					break;
+				default:
+					//if unknown command
+					System.out.println(command + " is unknown command!");
+					adminStartScanning();
+					break;
 			}
 		}
 
 	}
 
 	private static void printUserInfo(String username) {
-		int c=0;
 		int index = 0;
-		boolean bol=false;
-
-
-		while (c < objectArrayList.size()) {
-
-			if (objectArrayList.get(c).getLoginUsernameData().equals(username)) {
-				prntln("found username at index " + c);
-				index=c;
-				bol=true;
-
-
-			}
-			c++;
-
+		for (int i =0; i<users.size(); i++) {
+			if (users.get(i).getUsername().equals(username)) index=i;
 		}
-
-		if(bol && objectArrayList.get(index).getLoginUsernameData().equals(username)){
-			ArrayList<String> oCBooksList =objectArrayList.get(index).getBooksArrayList();
-
-			if (oCBooksList != null) {
-
-				prntln(username+" checked out these books=");
-
-				int counter=0;
-				while (counter != oCBooksList.size()) {
-					prntln((counter + 1) + ") " + oCBooksList.get(counter));
-					counter++;
-				}
-			} else {
-				prntln(username+"  haven't checked out any books!");
-
-			}
-			prntln("Password: "+objectArrayList.get(index).getLoginPasswordData());
-
-			prntln("Type of user: "+objectArrayList.get(index).getLoginTypeData());
+		ArrayList<Book> backpack = users.get(index).getBackpack();
+		try {
+			System.out.println(username+" checked out these books=");
+			for (int i=0; i<backpack.size(); i++) {
+                System.out.println((i + 1) + ") " + backpack.get(i).getBookName());
+                i++;
+            }
+		} catch (NullPointerException e) {
+			System.out.println(username+"  haven't checked out any books!");
 		}
-
+			System.out.println("Password: "+ users.get(index).getPassword() +"\n Type of user: "+ users.get(index).getRole());
 	}
 
 	public static void userStartScanning() {
 
-		command = sc.nextLine();
-		if (command.equals("listbooks")) {
+		command = scanner.nextLine();
+		switch (command) {
+			case "listbooks":
 
-			listBooks();
-			userStartScanning();
+				listBooks();
+				userStartScanning();
+				break;
+			case "checkoutbook": {
 
+				System.out.println("Please, enter the book name.");
+				String theBook = scanner.nextLine();
+				checkOutBook(theBook);
+				userStartScanning();
+				break;
+			}
+			case "returnbook": {
 
-		} else if (command.equals("checkoutbook")) {
+				System.out.println("Please, enter the book name.");
+				String bookName=scanner.nextLine();
+				returnBook(bookName);
+				userStartScanning();
+				break;
+			}
+			case "myinfo":
 
-			prntln("please enter the book name");
-			String theBook = sc.nextLine();
-			checkOutBook(theBook);
-			userStartScanning();
-
-		} else if (command.equals("returnbook")) {
-
-			prntln("please enter the book name");
-			String theBook = sc.nextLine();
-			returnBook(theBook);
-			userStartScanning();
-
-		} else if (command.equals("myinfo")) {
-			ArrayList<String> oCBooksList =objectArrayList.get(objectIndex).getBooksArrayList();
-
-
-			if (oCBooksList!=null && !oCBooksList.get(0).isEmpty()) {
-
-				prntln("You checked out those books=");
-
-				int counter=0;
-				while (counter != oCBooksList.size()) {
-					prntln((counter + 1) + ") " + oCBooksList.get(counter));
-					counter++;
+				ArrayList<Book> backpack = users.get(uUserIndex).getBackpack();
+				try {
+					if(!backpack.get(0).getBookName().isEmpty())System.out.println("You checked out those books=");
+					else System.out.println("You haven't checked out any books");
+					for (int i=0; i!=backpack.size();i++) {
+						Book book =backpack.get(i);
+						System.out.println((i + 1) + ") " + book.getBookName()+" at:"+book.getCheckedOutDate());
+					}
+				} catch (NullPointerException | IndexOutOfBoundsException e) {
+					System.out.println("You haven't checked out any books");
 				}
-			}else prntln("You haven't checked out any books");
-			userStartScanning();
+
+				userStartScanning();
 
 
-		} else if (command.equals("logout")) {
+				break;
+			case "logout":
 
-			prntln("logout succeed! ");
-			prntln("\n");
-			login();
-		} else if (command.equals("help")) {
-			prntln(
-					"listbooks     to list all books in the library "
-							+ "\n" + "checkoutbook  to checkout a book from library"
-							+ "\n" + "returnbook  to return checked out book to library"
-							+ "\n" + "myinfo  to get info about checked out books"
+				System.out.println("logout succeed! ");
+				System.out.println("\n");
+				login();
+				break;
+			case "help":
+				System.out.println(
+						"listbooks     to list all books in the library " + "\n" + "checkoutbook  to checkout a book from library"
+								+ "\n" + "returnbook  to return checked out book to library" + "\n" + "myinfo  to get info about checked out books"
+				);
+				userStartScanning();
 
-
-
-
-			);
-			userStartScanning();
-
-		} else {
-			//if unknown command
-			System.out.println(command + " is unknown command!");
-			userStartScanning();
+				break;
+			default:
+				//if unknown command
+				System.out.println(command + " is unknown command!");
+				userStartScanning();
+				break;
 		}
 
 	}
-
 
 	public static void listBooks() {
-
 		int counter = 0;
-
-		while (counter != bookNames.size()) {
-			prntln((counter + 1) + ") " + bookNames.get(counter));
+		while (counter != libraryBooks.size()) {
+			System.out.println((counter + 1) + ") " + libraryBooks.get(counter).getBookName());
 			counter++;
 		}
-
 	}
 
-
-	private static void checkOutBook(String theBook) {
-
-		if (bookNames.contains(theBook)) {
-			prntln("found the Book!");
-
-			bookNames.remove(theBook);
-
-			UserData o =new UserData();
-			o.setLoginUsernameData(uUserName);
-			o.setLoginPasswordData(uPassword);
-			o.setLoginTypeData("user");
-
-			ArrayList<String> oCBooksList =objectArrayList.get(objectIndex).getBooksArrayList();
-			if(oCBooksList!=null)
-			{
-				oCBooksList.add(theBook);
-				o.setBooksArrayList(oCBooksList);
-			}else{
-				oCBooksList=new ArrayList<String>(0);
-				oCBooksList.add(theBook);
-				o.setBooksArrayList(oCBooksList);
-
-			}
-			objectArrayList.set(objectIndex, o );
-
-			CheckedOutBooks cob =new CheckedOutBooks();
-			cob.setBook(theBook);
-			cob.setTime(currentTime());
-			cob.setUsername(uUserName);
-			checkedOutBooks.add(cob);
-
-
-			prntln("process of check out completed!");
-
-			prntln("You checked out those books=");
-
-			int counter=0;
-			while (counter != oCBooksList.size()) {
-				prntln((counter + 1) + ") " + oCBooksList.get(counter));
-				counter++;
-			}
-
-			prntln("library remaining books=");
-			counter = 0;
-			while (counter != bookNames.size()) {
-				prntln((counter + 1) + ") " + bookNames.get(counter));
-				counter++;
-			}
-
-		} else prntln("book not found!");
-
-
-
-	}
-
-	private static void addNewBook(String name) {
-
-
-		boolean bookIsAlreadyExists;
-
-		if (bookNames.contains(name)){
-
+	private static void checkOutBook(String bookName) {
+			Integer bookIndex=null;
+		for(int i=0; i<libraryBooks.size(); i++){
+			if(libraryBooks.get(i).getBookName().equals(bookName))bookIndex=i;
 		}
 
-		bookNames.add(name);
-		System.out.println(name + " Successfully added to the library!");
-
-	}
-
-	private static void prntln(String text) {
-		System.out.println(text);
-
-	}
-
-	private static void returnBook(String book){
-		ArrayList<String> oCBooksList =objectArrayList.get(objectIndex).getBooksArrayList();
-
-		if(oCBooksList!=null && oCBooksList.contains(book)){
-
-			oCBooksList.remove(book);
-			objectArrayList.get(objectIndex).setBooksArrayList(oCBooksList);
-			bookNames.remove(book);
-
-			//get the object by index then remove
-
-			int c=0;
-			while(c< checkedOutBooks.size()){
-				if (checkedOutBooks.get(c).getBook().equals(book)){
-					checkedOutBooks.remove(c);
-
-				}
-
-				c++;
+		try {
+			Book book = libraryBooks.get(bookIndex);
+			System.out.println("found the Book!");
+			libraryBooks.remove(book);
+			book.setBorrowerName(uUserName);
+			book.setCheckedOutDate(currentTime());
+			ArrayList<Book> backpack = users.get(uUserIndex).getBackpack();
+			User user =new User(uUserName, uPassword, uTypeOfUse, backpack);
+			try {
+				backpack.add(book);
+				user.setBackpack(backpack);
+			} catch (NullPointerException e) {
+				backpack=new ArrayList<Book>(0);
+				backpack.add(book);
+				user.setBackpack(backpack);
 			}
+			users.set(uUserIndex, user);
+			checkedOutBooks.add(book);
+			System.out.println("process of check out completed!");
+			System.out.println("You checked out those books=");
+			int counter=0;
+			while (counter != backpack.size()) {
+				System.out.println((counter + 1) + ") " + backpack.get(counter).getBookName());
+				counter++;
+			}
+			System.out.println("library remaining books:");
+			listBooks();
+		} catch (NullPointerException | ArrayIndexOutOfBoundsException e) {
+			System.out.println("book not found!");
+		}
+	}
 
+	private static void addNewBook(String bookName) {
+		Book book = new Book(bookName, null, null);
+		if (libraryBooks.contains(book)){
+			System.out.print("Book already exists!");
+		}else {
+			libraryBooks.add(book);
+			System.out.println(book.getBookName() + " Successfully added to the library!");
+		}
+	}
 
+	private static void returnBook(String bookName) {
 
-		}else prntln("the book isn't exist!");
-
+		ArrayList<Book> backpack = users.get(uUserIndex).getBackpack();
+		Integer bookIndex=null;
+		for(int i=0; i!=backpack.size(); i++){
+			if(backpack.get(i).getBookName().equals(bookName))bookIndex=i;
+		}
+		try {
+			Book book = backpack.get(bookIndex);
+			backpack.remove(book);
+			users.get(uUserIndex).setBackpack(backpack);
+			book.setBorrowerName(null);
+			book.setCheckedOutDate(null);
+			libraryBooks.add(book);
+			//get the object by index then remove
+			int counter = 0;
+			while (counter < checkedOutBooks.size()) {
+				if (bookName.equals(checkedOutBooks.get(counter).getBookName())) {
+					checkedOutBooks.remove(counter);
+				}
+				counter++;
+			}
+		} catch (NullPointerException e) {
+			System.out.println("You haven't check out this book!");
+		}
 
 	}
 
 	private static void login() {
-
-		prntln("Please enter your Username..");
-		uUserName = sc.nextLine();
-		prntln("Please enter your Password..");
-		uPassword = sc.nextLine();
-
-		int c = 0;
-
-		while (c < objectArrayList.size()) {
-
-			if (objectArrayList.get(c).getLoginUsernameData().equals(uUserName)) {
-				prntln("found uUserName at index " + c);
-
-				objectIndex = c;
-
+		System.out.println("Please enter your Username..");
+		uUserName = scanner.nextLine();
+		System.out.println("Please enter your Password..");
+		uPassword = scanner.nextLine();
+		int counter = 0;
+		while (counter < users.size()) {
+			if (users.get(counter).getUsername().equals(uUserName)) {
+				System.out.println("found uUserName at index " + counter);
+				uUserIndex = counter;
 			}
-			c++;
-
+			counter++;
 		}
-		if (uUserName.equals(objectArrayList.get(objectIndex).getLoginUsernameData()) && uPassword.equals(objectArrayList.get(objectIndex).getLoginPasswordData())) {
-
-			uTypeOfUse = objectArrayList.get(objectIndex).getLoginTypeData();
-
-
-			prntln("login success! welcome " + uTypeOfUse + " " + uUserName);
-
+		if (uUserName.equals(users.get(uUserIndex).getUsername()) && uPassword.equals(users.get(uUserIndex).getPassword())) {
+			uTypeOfUse = users.get(uUserIndex).getRole();
+			System.out.println("login success! welcome " + uTypeOfUse + " " + uUserName);
 			if (uTypeOfUse.equals("user")) {
-
 				userStartScanning();
 			} else adminStartScanning();
-
-
 		} else {
-			prntln("Username or password is incorrect! please try again");
+			System.out.println("Username or password is incorrect! please try again");
 			login();
 		}
-
-
-
 	}
+
 	private static void printReport(){
+		System.out.println("Today is: "+currentTime());
+		for (Book book : checkedOutBooks) {
 
-		long timeStamp =System.currentTimeMillis();
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTimeInMillis(timeStamp);
-
-
-
-
-
-
-		int c=0;
-		while(c<checkedOutBooks.size()){
-			Map<TimeUnit, Long> diff =computeDiff(calendar.getTime(),checkedOutBooks.get(c).getTime());
-			//problem here,, cannot compare diff with int
-
-			prntln("Book name:( " + checkedOutBooks.get(c).getBook() + " ) user:( " + checkedOutBooks.get(c).getUsername() + " ) on:( " + checkedOutBooks.get(c).getTime() + " )");
-
-
-			c++;
+			String details= "BookName:"+book.getBookName()+" User:"+book.getBorrowerName()+" CheckedOutOn:"+book.getCheckedOutDate();
+			System.out.println(details);
 		}
-
-
 	}
 
 	private static void register(String username, String password, String typeofuse, int mode){
-
 		if (mode == CHECKING || mode == REGISTER ) {
 			int c=0;
-
-			while(( c < objectArrayList.size()&& usernameIsAvailable)){
-
-				if(objectArrayList.get(c).getLoginUsernameData().equals(username)){
-
-
-					usernameIsAvailable=false;
-					prntln("username is already exist!");
-
-
-
+			while(( c < users.size()&& usernameIsAvailable)) {
+				if (users.get(c).getUsername().equals(username)) {
+					usernameIsAvailable = false;
+					System.out.println("username is already exist!");
 				}
 				c++;
-
 			}
 		}
-
 		if (mode == REGISTER ) {
 			if (usernameIsAvailable) {
-				UserData o =new UserData();
-				o.setLoginUsernameData(username);
-				o.setLoginPasswordData(password);
-				o.setLoginTypeData(typeofuse);
-				objectArrayList.add(o);
-
-				prntln(username+" Registered successfully!");
+				User o =new User(username, password,typeofuse ,null);
+				o.setUsername(username);
+				o.setPassword(password);
+				o.setRole(typeofuse);
+				users.add(o);
+				System.out.println(username+" Registered successfully!");
 			}
 		}
-
-
 	}
 
-
-	private static Date currentTime(){
+	private static String currentTime(){
 
 		long timeStamp =System.currentTimeMillis();
-
-
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTimeInMillis(timeStamp);
-		return calendar.getTime();
-
-	}
-
-	public static Map<TimeUnit,Long> computeDiff(Date date1, Date date2) {
-		long diffInMillies = date2.getTime() - date1.getTime();
-		List<TimeUnit> units = new ArrayList<TimeUnit>(EnumSet.allOf(TimeUnit.class));
-		Collections.reverse(units);
-		Map<TimeUnit,Long> result = new LinkedHashMap<TimeUnit,Long>();
-		long milliesRest = diffInMillies;
-		for ( TimeUnit unit : units ) {
-			long diff = unit.convert(milliesRest,TimeUnit.MILLISECONDS);
-			long diffInMilliesForUnit = unit.toMillis(diff);
-			milliesRest = milliesRest - diffInMilliesForUnit;
-			result.put(unit,diff);
-		}
-		return result;
-	}
-
-}
-
-
-
-class UserData {
-
-	private String loginUsernameData;
-	private String loginPasswordData;
-	private String loginTypeData;
-	private ArrayList<String> booksArrayList=null;
-
-
-	public String getLoginUsernameData() {
-		return loginUsernameData;
-	}
-
-	public String getLoginPasswordData() {
-		return loginPasswordData;
-	}
-
-	public String getLoginTypeData() {
-		return loginTypeData;
-	}
-
-
-
-	public void setLoginUsernameData(String loginUsernameData) {
-		this.loginUsernameData = loginUsernameData;
-	}
-
-	public void setLoginPasswordData(String loginPasswordData) {
-		this.loginPasswordData = loginPasswordData;
-	}
-
-	public void setLoginTypeData(String loginTypeData) {
-		this.loginTypeData = loginTypeData;
-	}
-
-
-	public ArrayList<String> getBooksArrayList() {
-		return booksArrayList;
-	}
-
-	public void setBooksArrayList(ArrayList<String> booksArrayList) {
-		this.booksArrayList = booksArrayList;
-	}
-}
-class CheckedOutBooks{
-	private String username;
-	private String book;
-	private Date Time;
-
-
-	public String getUsername() {
-		return username;
-	}
-
-	public String getBook() {
-		return book;
-	}
-
-	public Date getTime() {
-		return Time;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public void setBook(String book) {
-		this.book = book;
-	}
-
-	public void setTime(Date time) {
-		Time = time;
+		SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd h:m a");
+		return format1.format(calendar.getTime());
 	}
 }
