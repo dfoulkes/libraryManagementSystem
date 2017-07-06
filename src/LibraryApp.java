@@ -1,6 +1,7 @@
 package src;
 
 import java.util.ArrayList;
+import java.util.Scanner;
 
 /**
  * This will host as the runtime for the new app.
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 public class LibraryApp {
 	
 	private static ArrayList<String> booksName;
+        private Scanner sc = new Scanner(System.in);
 	
 	public static void main(String[] args) {
 		
