@@ -5,29 +5,9 @@ import java.util.ArrayList;
  * @author muhammadtayyabsaeed
  *
  */
-public class LibraryApp {
-	
-	static ArrayList<String> book;
-	
+public class LibraryApp {	
 	
 	public  void main(String[] args) {
 		
-		book = new ArrayList<String>();
-		
-	}
-	
-	//Adding new books to the ArrayList<String> book
-	public static void addNewBook(String bookName){
-		if(book.contains(bookName)){
-			System.out.println("The book already exists");
-		}
-		else{
-			book.add(bookName);
 		}
 	}
-	
-	//registering a new book
-	
-	public void 
-	
-}
