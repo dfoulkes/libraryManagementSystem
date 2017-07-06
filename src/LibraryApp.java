@@ -11,7 +11,7 @@ import java.util.Scanner;
 public class LibraryApp {
 	
 	private static ArrayList<String> booksName;
-        private Scanner sc = new Scanner(System.in);
+        private Scanner sc = new Scanner(System.in); //test
 	
 	public static void main(String[] args) {
 		
