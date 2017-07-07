@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<GridPane alignment="CENTER" prefHeight="400" prefWidth="400" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="LibraryApp">
+    <TextField fx:id="usernameTF" prefColumnCount="1" prefWidth="200" promptText="Username..." GridPane.rowIndex="1" />
+    <PasswordField fx:id="passwordPF" promptText="Password..." GridPane.rowIndex="2" />
+    <Button fx:id="login_btn" maxWidth="200.0" onAction="#handle" prefWidth="200" text="Login" GridPane.rowIndex="3" />
+   <columnConstraints>
+      <ColumnConstraints />
+   </columnConstraints>
+   <rowConstraints>
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+   </rowConstraints>
+
+
+
+</GridPane>
