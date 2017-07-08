@@ -1,6 +1,10 @@
 package library;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Library {
 
@@ -14,38 +18,34 @@ public class Library {
     public Library() {
         books = new ArrayList<>();
         users = new ArrayList<>();
-        checkOuts=new ArrayList<>();
-        members=new ArrayList<>();
-        returns=new ArrayList<>();
+        checkOuts = new ArrayList<>();
+        members = new ArrayList<>();
+        returns = new ArrayList<>();
     }
-    
-    public boolean login(String username,String password){
-        User user=findUserByUsername(username);
-        if (user!=null) {
-            if (user.getPassword().equals(password)) {
-                auth=new Auth(user);
-                return true;
-            }else{
-                System.err.println("Username or password is incorrect please try again");
-            }
-        }else{
+
+    public boolean login(String username, String password) {
+        User user = findUserByUsername(username);
+        if (user != null && user.getPassword().equals(password)) {
+            auth = new Auth(user);
+            return true;
+        } else {
             System.err.println("Username or password is incorrect please try again");
         }
         return false;
     }
 
-    private User findUserByUsername(String username){
-        User user=null;
+    private User findUserByUsername(String username) {
+        User user = null;
         for (User u : users) {
             if (u.getUserName().equals(username)) {
-               user=u; 
-               break;
+                user = u;
+                break;
             }
         }
         return user;
-        
+
     }
-    
+
     public void addNewUser(User newUser) {
         if (users.isEmpty()) {
             newUser.setType(UserType.ADMIN);
@@ -64,30 +64,17 @@ public class Library {
     }
 
     private boolean isUserAvailable(User user) {
-        boolean isA = false;
-        for (User u : users) {
-            if (u.equals(user)) {
-                isA = true;
-                break;
-            }
-        }
-        return isA;
+        return users.stream().filter(user::equals).findFirst().isPresent();
     }
-    
+
     public void addNewBook(Book book) {
         if (isUserAvailable(auth.getUser())) {
             if (auth.getUser().getType() == UserType.ADMIN) {
-                boolean isAvailabe = false;
-                for (Book b : books) {
-                    if (b.equals(book)) {
-                        isAvailabe = true;
-                        break;
-                    }
-                }
-                if (!isAvailabe) {
+                Optional<Book> f = books.stream().filter(book::equals).findFirst();
+                if (!f.isPresent()) {
                     books.add(book);
                     System.out.println("Book " + book.getName() + " Added to library by User:" + auth.getUser().getUserName());
-                } else {
+                }else{
                     System.out.println("Book " + book.getName() + " already in");
                 }
             } else {
@@ -100,48 +87,32 @@ public class Library {
     }
 
     public Book searchBookByISBN(String isbn) {
-        Book book = null;
-        for (Book b : books) {
-            if (b.getIsbn().equalsIgnoreCase(isbn)) {
-                book = b;
-                break;
-            }
-        }
-        if (book == null) {
-            System.out.println("Cant find this book ");
-        }
-        return book;
+        Optional<Book> bo = books.stream().filter(b -> b.getIsbn().equalsIgnoreCase(isbn)).findFirst();
+        return bo.isPresent() ? bo.get() : null;
     }
-    
-    public ArrayList<Book> searchBookByName(String name){
-        ArrayList<Book> searchList=new ArrayList<>();
-        
-        return searchList;
+
+    public ArrayList<Book> searchBookByName(String name) {
+        return new ArrayList<>(books.stream().filter(b -> b.getName().equalsIgnoreCase(name)).collect(Collectors.toList()));
     }
 
     public void removeBook(Book book) {
-        boolean isRemoved = false;
-        for (Book b : books) {
-            if (book.equals(b)) {
-                books.remove(book);
-                isRemoved = true;
-            }
-        }
-        if (isRemoved) {
+        Optional<Book> f = books.stream().filter(book::equals).findFirst();
+        if (f.isPresent()) {
+            books.remove(f.get());
             System.out.println("Book " + book.getName() + " was Removed from library");
         } else {
             System.out.println("Can not find book " + book.getName() + " to delete");
         }
     }
 
-    private void checkOutBook(){
-        
+    private void checkOutBook() {
+
     }
-    
-    private void returnBook(){
-        
+
+    private void returnBook() {
+
     }
-    
+
     public ArrayList<Book> getBooks() {
         return books;
     }

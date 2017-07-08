@@ -90,8 +90,13 @@ public class Book {
             return false;
         }
         final Book other = (Book) obj;
-        return (!Objects.equals(this.isbn, other.isbn));
+        if (!Objects.equals(this.isbn, other.isbn)) {
+            return false;
+        }
+        return true;
     }
+
+    
 
     @Override
     public String toString() {
