@@ -1,10 +1,8 @@
 package library;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Library {
 
@@ -35,14 +33,8 @@ public class Library {
     }
 
     private User findUserByUsername(String username) {
-        User user = null;
-        for (User u : users) {
-            if (u.getUserName().equals(username)) {
-                user = u;
-                break;
-            }
-        }
-        return user;
+        Optional<User> user = users.stream().filter(u->username.equals(u.getUserName())).findFirst();
+        return user.isPresent()?user.get():null;
 
     }
 
