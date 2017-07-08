@@ -63,10 +63,7 @@ public class Book {
         this.added = added;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        return super.equals(obj);
-    }
+    
 
     private static final String SEPARATOR="------------------------------------------------------------------------------------------------";
     public static final String BOOK_FORMATER = "%-2s %-15s %-2s %-15s %-2s %-15s %-2s %-15s %-2s %-15s %-2s  %n";
@@ -79,6 +76,21 @@ public class Book {
         int hash = 3;
         hash = 89 * hash + Objects.hashCode(this.isbn);
         return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Book other = (Book) obj;
+        return (!Objects.equals(this.isbn, other.isbn));
     }
 
     @Override

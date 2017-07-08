@@ -63,7 +63,12 @@ public class LibraryApp {
 
         } else if (command.equalsIgnoreCase("removeUser")) {
 
-        } else if (command.equalsIgnoreCase("help")) {
+        } else if (command.equalsIgnoreCase("checkout")) {
+
+        } else if (command.equalsIgnoreCase("return")) {
+
+        } 
+        else if (command.equalsIgnoreCase("help")) {
             help(scn);
         } else {
             System.out.println(command + " is not recognized please type \"help\" for see avibale commands");

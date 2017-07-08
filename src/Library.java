@@ -5,12 +5,18 @@ import java.util.ArrayList;
 public class Library {
 
     private final ArrayList<Book> books;
+    private final ArrayList<Checkout> checkOuts;
+    private final ArrayList<Member> members;
+    private final ArrayList<Return> returns;
     private final ArrayList<User> users;
     private Auth auth;
 
     public Library() {
         books = new ArrayList<>();
         users = new ArrayList<>();
+        checkOuts=new ArrayList<>();
+        members=new ArrayList<>();
+        returns=new ArrayList<>();
     }
     
     public boolean login(String username,String password){
@@ -54,9 +60,7 @@ public class Library {
             }
         } else {
             System.out.println("Cant add User because User:" + auth.getUser().getUserName() + " is not part of library");
-
         }
-
     }
 
     private boolean isUserAvailable(User user) {
@@ -69,6 +73,8 @@ public class Library {
         }
         return isA;
     }
+    
+  
 
     public void addNewBook(Book book) {
         if (isUserAvailable(auth.getUser())) {
@@ -130,6 +136,14 @@ public class Library {
         }
     }
 
+    private void checkOutBook(){
+        
+    }
+    
+    private void returnBook(){
+        
+    }
+    
     public ArrayList<Book> getBooks() {
         return books;
     }
