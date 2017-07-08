@@ -14,8 +14,6 @@ public class LibraryApp {
         Scanner scn = new Scanner(System.in);
         run(scn);
     }
-    
-    
 
     private static void run(Scanner scn) {
         login(scn);
@@ -24,25 +22,26 @@ public class LibraryApp {
 
     private static void login(Scanner scn) {
         System.out.println("---------Please Login------------");
-        String username = getTextInput("Please enter username:", scn);
+        String username = getTextInput("Please enter username", scn);
         String password = getTextInput("Please enter password", scn);
         loginCount++;
         if (loginCount < 3) {
             if (LIB.login(username, password)) {
                 System.out.println("---------Welcmoe to the Library---------");
+                System.out.println("please enter 'help' command to view all available cammands\nand do you need to exit please type 'exit'");
                 oparateLibrary(scn);
             } else {
                 login(scn);
             }
         } else {
-            System.out.println("Too many request for login! System sutdown automaticaly..!");
+            System.err.println("Too many request for login! System sutdown automaticaly..!");
         }
     }
 
     private static void oparateLibrary(Scanner scn) {
         String command = scn.next();
         if (command.equalsIgnoreCase("Exit")) {
-            System.out.println("Good bay");
+            System.out.println("Thank you for using System..!");
         } else if (command.equalsIgnoreCase("newBook")) {
             addNewBook(scn);
         } else if (command.equalsIgnoreCase("viewBooks")) {
@@ -67,8 +66,7 @@ public class LibraryApp {
 
         } else if (command.equalsIgnoreCase("return")) {
 
-        } 
-        else if (command.equalsIgnoreCase("help")) {
+        } else if (command.equalsIgnoreCase("help")) {
             help(scn);
         } else {
             System.out.println(command + " is not recognized please type \"help\" for see avibale commands");
@@ -77,13 +75,27 @@ public class LibraryApp {
     }
 
     private static void help(Scanner scn) {
-        String help = "Add New Book:newbook\n"
-                + "View All book details:viewbooks\n"
-                + "Serach for a book:searchbook\n"
-                + "Remove a book:removebook\n"
-                + "Add new user:newuser\n";
+        String format = "%-2s %-20s %-2s %-10s %-2s %n";
+        String separater="---------------------------------------\n";
+        String help
+                = separater
+                + String.format(format, "|", "Description", "|", "Command", "|")
+                + separater
+                + String.format(format,"|", "Add New Book", "|", "newbook", "|")
+                + String.format(format,"|", "Add New Book", "|", "newbook", "|")
+                + String.format(format,"|", "View All Books", "|", "viewbooks", "|")
+                + String.format(format,"|", "Add new user", "|", "newuser", "|")
+                + String.format(format,"|", "View all users", "|", "viewusers", "|")
+                + separater;
+
         System.out.println(help);
         oparateLibrary(scn);
+    }
+    
+    public static String formatAsATable(String[][] data){
+        
+        
+        return "";
     }
 
     private static void removeBook(Scanner scn) {
@@ -127,13 +139,15 @@ public class LibraryApp {
 
     private static String getTextInput(String what, Scanner scn) {
         //Enter validate String rules
-        System.out.println(what);
+        what+=": ";
+        System.out.print(what);
         return scn.next();
     }
 
     //validate Input Number
     private static int getNumberInput(String what, Scanner scn) {
-        System.out.println(what);
+        what+=": ";
+        System.out.print(what);
         String numberAsString = scn.next();
         try {
             int number = Integer.parseInt(numberAsString);

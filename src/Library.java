@@ -26,10 +26,10 @@ public class Library {
                 auth=new Auth(user);
                 return true;
             }else{
-                System.out.println("Username or password is incorrect please try again");
+                System.err.println("Username or password is incorrect please try again");
             }
         }else{
-            System.out.println("Username or password is incorrect please try again");
+            System.err.println("Username or password is incorrect please try again");
         }
         return false;
     }
@@ -74,8 +74,6 @@ public class Library {
         return isA;
     }
     
-  
-
     public void addNewBook(Book book) {
         if (isUserAvailable(auth.getUser())) {
             if (auth.getUser().getType() == UserType.ADMIN) {
