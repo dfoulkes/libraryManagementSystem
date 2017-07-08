@@ -65,10 +65,14 @@ public class Book {
 
     @Override
     public boolean equals(Object obj) {
-        return super.equals(obj); 
+        return super.equals(obj);
     }
 
-    
+    private static final String SEPARATOR="------------------------------------------------------------------------------------------------";
+    public static final String BOOK_FORMATER = "%-2s %-15s %-2s %-15s %-2s %-15s %-2s %-15s %-2s %-15s %-2s  %n";
+    public static final String TABLE_HEADER = SEPARATOR+"\n"
+            + String.format(BOOK_FORMATER, "|", "Name", "|", "ISBN", "|", "PAGE COUNT", "|", "AUTHOR", "|", "ADDED DATE", "|")
+            + SEPARATOR;
 
     @Override
     public int hashCode() {
@@ -79,15 +83,15 @@ public class Book {
 
     @Override
     public String toString() {
-        String bookString="-----------"+this.name+"-----------------\n";
-        bookString+="Name: "+this.name;
-        bookString+="\nISBN: "+this.isbn;
-        bookString+="\nAuthor: "+this.author;
-        bookString+="\nAdded Data: "+new SimpleDateFormat("yyyy/MM/dd").format(this.added)+"\n";
+        String bookString = String.format(BOOK_FORMATER,
+                "|", this.name,
+                "|", this.isbn,
+                "|", Integer.toString(this.pageCount),
+                "|", this.author,
+                "|", new SimpleDateFormat("yyyy/MMM/dd").format(this.added), "|")
+                + SEPARATOR;
         return bookString;
-        
+
     }
 
-    
-    
 }

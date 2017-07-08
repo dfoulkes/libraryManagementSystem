@@ -4,67 +4,53 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Scanner;
 
+//Please use JDK 8 
 public class LibraryApp {
 
-    static Library lib = new Library();
+    private static final Library LIB = new Library();
 
     public static void main(String[] args) {
-        lib.addNewUser(new User(1, "prabath", "1234", "Prabath Madushan", UserType.ADMIN));
+        LIB.addNewUser(new User(1, "prabath", "1234", "Prabath Madushan", UserType.ADMIN));
         Scanner scn = new Scanner(System.in);
         run(scn);
-
     }
+    
+    
 
-    public static void run(Scanner scn) {
+    private static void run(Scanner scn) {
         login(scn);
     }
     static int loginCount = 0;
 
-    public static void login(Scanner scn) {
+    private static void login(Scanner scn) {
         System.out.println("---------Please Login------------");
-        System.out.println("Please enter username");
-        String username = scn.next();
-        System.out.println("Please enter password");
-        String password = scn.next();
-         loginCount++;
+        String username = getTextInput("Please enter username:", scn);
+        String password = getTextInput("Please enter password", scn);
+        loginCount++;
         if (loginCount < 3) {
-            if (lib.login(username, password)) {
-                System.out.println("---------Welcmoe to the Library---------------");
+            if (LIB.login(username, password)) {
+                System.out.println("---------Welcmoe to the Library---------");
                 oparateLibrary(scn);
             } else {
                 login(scn);
             }
-           
         } else {
             System.out.println("Too many request for login! System sutdown automaticaly..!");
         }
     }
 
-    public static void oparateLibrary(Scanner scn) {
+    private static void oparateLibrary(Scanner scn) {
         String command = scn.next();
         if (command.equalsIgnoreCase("Exit")) {
             System.out.println("Good bay");
         } else if (command.equalsIgnoreCase("newBook")) {
-            System.out.println("Please enter name of the book");
-            String name = scn.next();
-            System.out.println("Please enter ISBN of the book");
-            String isbn = scn.next();
-            System.out.println("Please enter page count of the book");
-            int pageCount = scn.nextInt();
-            System.out.println("Please enter Author of the book");
-            String author = scn.next();
-            Date date = new Date();
-            System.out.println("Added date set as " + new SimpleDateFormat("yyyy/MMM/dd").format(date));
-            Book book = new Book(name, isbn, pageCount, author, date);
-            lib.addNewBook(book);
-            oparateLibrary(scn);
+            addNewBook(scn);
         } else if (command.equalsIgnoreCase("viewBooks")) {
-            viewAllBooks();
-            oparateLibrary(scn);
+            viewAllBooks(scn);
         } else if (command.equalsIgnoreCase("searchBook")) {
-
+            searchBook(scn);
         } else if (command.equalsIgnoreCase("removeBook")) {
-
+            removeBook(scn);
         } else if (command.equalsIgnoreCase("newUser")) {
 
         } else if (command.equalsIgnoreCase("viewUsers")) {
@@ -78,41 +64,78 @@ public class LibraryApp {
         } else if (command.equalsIgnoreCase("removeUser")) {
 
         } else if (command.equalsIgnoreCase("help")) {
-            String help="Add New Book:newbook\n"
-                    + "View All book details:viewbooks\n"
-                    + "Serach for a book:searchbook\n"
-                    + "Remove a book:removebook\n"
-                    + "Add new user:newuser\n";
-            System.out.println(help);
-            oparateLibrary(scn);
-            
+            help(scn);
         } else {
-            System.out.println(command + " is not recognized please look the documentation");
+            System.out.println(command + " is not recognized please type \"help\" for see avibale commands");
             oparateLibrary(scn);
         }
     }
 
-    public static void viewAllBooks() {
-        if (lib.getBooks().isEmpty()) {
+    private static void help(Scanner scn) {
+        String help = "Add New Book:newbook\n"
+                + "View All book details:viewbooks\n"
+                + "Serach for a book:searchbook\n"
+                + "Remove a book:removebook\n"
+                + "Add new user:newuser\n";
+        System.out.println(help);
+        oparateLibrary(scn);
+    }
+
+    private static void removeBook(Scanner scn) {
+
+        oparateLibrary(scn);
+    }
+
+    private static void searchBook(Scanner scn) {
+        System.out.println("Please enter 1 to Serach by id, enter 2 to seach by name");
+        String subCommand = scn.next();
+        if (subCommand.endsWith("1")) {
+
+        } else if (subCommand.endsWith("2")) {
+
+        }
+        oparateLibrary(scn);
+    }
+
+    private static void viewAllBooks(Scanner scn) {
+        if (LIB.getBooks().isEmpty()) {
             System.out.println("Library is empty");
         } else {
-            lib.getBooks().forEach(System.out::println);
+            System.out.println(Book.TABLE_HEADER);
+            LIB.getBooks().forEach(System.out::println);
         }
+        oparateLibrary(scn);
     }
 
     //IO
-    public static void addNewBook() {
-        Scanner scn = new Scanner(System.in);
-        System.out.println("Enter book name..");
-        String bookname = scn.next();
-        System.out.println("Enter ISBM..");
-        String ISBN = scn.next();
-        System.out.println("Enter Page counts");
-        int pageCount = scn.nextInt();
-        System.out.println("Enter Author");
-        String author = scn.next();
-        Book java = new Book(bookname, ISBN, pageCount, author, new Date());
-        //lib.addNewBook(java);
+    private static void addNewBook(Scanner scn) {
+        String name = getTextInput("Please enter name of the book", scn);
+        String isbn = getTextInput("Please enter ISBN of the book", scn);
+        int pageCount = getNumberInput("Please enter page count of the book", scn);
+        String author = getTextInput("Please enter Author of the book", scn);
+        Date date = new Date();
+        System.out.println("Added date set as " + new SimpleDateFormat("yyyy/MMM/dd").format(date));
+        Book book = new Book(name, isbn, pageCount, author, date);
+        LIB.addNewBook(book);
+        oparateLibrary(scn);
+    }
 
+    private static String getTextInput(String what, Scanner scn) {
+        //Enter validate String rules
+        System.out.println(what);
+        return scn.next();
+    }
+
+    //validate Input Number
+    private static int getNumberInput(String what, Scanner scn) {
+        System.out.println(what);
+        String numberAsString = scn.next();
+        try {
+            int number = Integer.parseInt(numberAsString);
+            return number;
+        } catch (NumberFormatException e) {
+            System.err.println("Please enter a number try again..!");
+            return getNumberInput(what, scn);
+        }
     }
 }
