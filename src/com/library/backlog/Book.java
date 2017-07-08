@@ -26,7 +26,7 @@ public class Book {
 	
 	
 	//getter isbn
-	public String getIsbn(String isbn){
+	public String getIsbn(){
 		return isbn;
 		}
 	

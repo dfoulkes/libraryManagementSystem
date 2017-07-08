@@ -8,6 +8,7 @@ public class Library {
 	
 	String isbn;
 	String title;
+	Book book;
 		
 	private List<Book> bookList;
 	// actually we doing this here:
@@ -55,21 +56,26 @@ public class Library {
 			@SuppressWarnings("resource")
 			Scanner reader = new Scanner(System.in);  // Reading from System.in
 			System.out.println("Enter book title:");
-			title = reader.nextLine();
+			String searchTitle = reader.nextLine();
 			
 			System.out.println("Enter book isbn:");
-			isbn = reader.nextLine();
+			String searchIsbn = reader.nextLine();
 			
-			Book bookSearch = new Book(isbn,title);
+			Book searchBook = new Book(searchIsbn,searchTitle);
+			
+			if(bookList.contains(searchBook)){
 			
 			for(int i = 0; i <= bookList.size(); i++){
 				
-				if(bookSearch.equals(bookList)){
+				if(searchIsbn.equalsIgnoreCase(book.getIsbn()) && searchTitle.equalsIgnoreCase(book.getTitle())){
+					
 					/**
 					 * TODO compare the object bookSearch with objects contained in the ArrayList
+					 * actually its not a TODO for I
+					 * 
 					 */
 					
-					if(bookList.get(i).getcheckedOut() == false){
+					if(!bookList.get(i).getcheckedOut()){
 						System.out.println("the book has been found and available");
 						}
 					
@@ -81,8 +87,9 @@ public class Library {
 				else{
 					System.out.println("The book is not part of the library");
 					}
+				}
 			}
 
-			}//end of searchBook
+		}//end of search
 		
 	}
