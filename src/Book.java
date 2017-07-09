@@ -5,7 +5,8 @@ import java.util.Date;
 import java.util.Objects;
 
 public class Book {
-
+public static final String[] TABLE_HEADER={"NAME", "ISBN", "PAGE COUNT", "AUTHOR", "ADDED DATE"};
+  
     private String name;
     private String isbn;
     private int pageCount;
@@ -99,8 +100,7 @@ public class Book {
         return pl;
     }
 
-    public static String[] getTableHeader() {
-        String[] tableHeader = {"NAME", "ISBN", "PAGE COUNT", "AUTHOR", "ADDED DATE"};
-        return tableHeader;
-    }
+    
+        
+    
 }

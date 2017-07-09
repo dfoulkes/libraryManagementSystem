@@ -109,9 +109,10 @@ public class Library {
         return books;
     }
     
+    
     public String[][] getAllBooksAsTableData(){
-        String[][] data=new String[books.size()+1][5];
-        data[0]=Book.getTableHeader();
+        String[][] data=new String[books.size()+1][Book.TABLE_HEADER.length];
+        data[0]=Book.TABLE_HEADER;
         int x=1;
         for (Book book : books) {
             data[x]=book.propertyList();
