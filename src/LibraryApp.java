@@ -1,6 +1,7 @@
 package library;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Scanner;
 
@@ -75,27 +76,75 @@ public class LibraryApp {
     }
 
     private static void help(Scanner scn) {
-        String format = "%-2s %-20s %-2s %-10s %-2s %n";
-        String separater="---------------------------------------\n";
-        String help
-                = separater
-                + String.format(format, "|", "Description", "|", "Command", "|")
-                + separater
-                + String.format(format,"|", "Add New Book", "|", "newbook", "|")
-                + String.format(format,"|", "Add New Book", "|", "newbook", "|")
-                + String.format(format,"|", "View All Books", "|", "viewbooks", "|")
-                + String.format(format,"|", "Add new user", "|", "newuser", "|")
-                + String.format(format,"|", "View all users", "|", "viewusers", "|")
-                + separater;
-
-        System.out.println(help);
+        String data[][]={
+            {"Description","Commands"},
+            {"Add New Book","newbook"},
+            {"View All Books","viewbooks"},
+            {"Add New User","newUser"},
+            {"View All User","viewusers"},
+            {"Remove A User","removeUser"},
+            {"Check Out a Book","checkout"},
+            {"Return a book","returnbook"},
+            {"View All Avilable Commands","help"},
+            {"Exit The System","exit"},
+            {"Logout","logout"}
+        };
+        System.out.println(formatAsATable(data));
         oparateLibrary(scn);
     }
-    
-    public static String formatAsATable(String[][] data){
-        
-        
-        return "";
+
+
+    public static String formatAsATable(String[][] data) {
+        String format = "";
+        int cc = data[0].length;
+        int maxl[] = new int[cc];
+        for (int i = 0; i < data.length; i++) {
+            for (int j = 0; j < data[i].length; j++) {
+                if (i == 0) {
+                    maxl[j] = data[i][j].length();
+                } else if (maxl[j] < data[i][j].length()) {
+                    maxl[j] = data[i][j].length();
+                }
+            }
+        }
+        int sSize = 0;
+        int x = 0;
+        for (int i = 1; i <= (cc * 2) + 1; i++) {
+            if (i % 2 != 0) {
+                format += "%-2s ";
+                sSize += 3;
+            } else {
+                format += " %-" + (maxl[x] + 3) + "s ";
+                sSize += maxl[x] + 3;
+                x++;
+            }
+        }
+        format += " %n";
+        String sep = "";
+        for (int i = 0; i < sSize + (2 * data[0].length) - 2; i++) {
+            sep += "-";
+        }
+        sep += "\n";
+        String newData[][] = new String[data.length][(cc * 2) + 1];
+        for (int i = 0; i < newData.length; i++) {
+            x = 0;
+            for (int j = 0; j < newData[i].length; j++) {
+                if ((j + 1) % 2 != 0) {
+                    newData[i][j] = "|";
+                } else {
+                    newData[i][j] = data[i][x];
+                    x++;
+                }
+            }
+        }
+        String table = sep;
+        table += String.format(format, (Object[]) newData[0]);
+        table += sep;
+        for (int i = 1; i < newData.length; i++) {
+            table += String.format(format, (Object[]) newData[i]);
+        }
+        table += sep;
+        return table;
     }
 
     private static void removeBook(Scanner scn) {
@@ -107,20 +156,15 @@ public class LibraryApp {
         System.out.println("Please enter 1 to Serach by id, enter 2 to seach by name");
         String subCommand = scn.next();
         if (subCommand.endsWith("1")) {
-
+            
         } else if (subCommand.endsWith("2")) {
-
+            
         }
         oparateLibrary(scn);
     }
 
     private static void viewAllBooks(Scanner scn) {
-        if (LIB.getBooks().isEmpty()) {
-            System.out.println("Library is empty");
-        } else {
-            System.out.println(Book.TABLE_HEADER);
-            LIB.getBooks().forEach(System.out::println);
-        }
+        System.out.println(formatAsATable(LIB.getAllBooksAsTableData()));
         oparateLibrary(scn);
     }
 
@@ -139,14 +183,14 @@ public class LibraryApp {
 
     private static String getTextInput(String what, Scanner scn) {
         //Enter validate String rules
-        what+=": ";
+        what += ": ";
         System.out.print(what);
         return scn.next();
     }
 
     //validate Input Number
     private static int getNumberInput(String what, Scanner scn) {
-        what+=": ";
+        what += ": ";
         System.out.print(what);
         String numberAsString = scn.next();
         try {

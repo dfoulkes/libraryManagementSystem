@@ -63,14 +63,6 @@ public class Book {
         this.added = added;
     }
 
-    
-
-    private static final String SEPARATOR="------------------------------------------------------------------------------------------------";
-    public static final String BOOK_FORMATER = "%-2s %-15s %-2s %-15s %-2s %-15s %-2s %-15s %-2s %-15s %-2s  %n";
-    public static final String TABLE_HEADER = SEPARATOR+"\n"
-            + String.format(BOOK_FORMATER, "|", "Name", "|", "ISBN", "|", "PAGE COUNT", "|", "AUTHOR", "|", "ADDED DATE", "|")
-            + SEPARATOR;
-
     @Override
     public int hashCode() {
         int hash = 3;
@@ -96,19 +88,19 @@ public class Book {
         return true;
     }
 
-    
-
-    @Override
-    public String toString() {
-        String bookString = String.format(BOOK_FORMATER,
-                "|", this.name,
-                "|", this.isbn,
-                "|", Integer.toString(this.pageCount),
-                "|", this.author,
-                "|", new SimpleDateFormat("yyyy/MMM/dd").format(this.added), "|")
-                + SEPARATOR;
-        return bookString;
-
+    public String[] propertyList() {
+        String[] pl = {
+            this.name,
+            this.isbn,
+            this.pageCount + "",
+            this.author + "",
+            new SimpleDateFormat("yyyy/MMM/dd").format(this.added)
+        };
+        return pl;
     }
 
+    public static String[] getTableHeader() {
+        String[] tableHeader = {"NAME", "ISBN", "PAGE COUNT", "AUTHOR", "ADDED DATE"};
+        return tableHeader;
+    }
 }

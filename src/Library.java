@@ -28,13 +28,13 @@ public class Library {
             return true;
         } else {
             System.err.println("Username or password is incorrect please try again");
+            return false;
         }
-        return false;
     }
 
     private User findUserByUsername(String username) {
-        Optional<User> user = users.stream().filter(u->username.equals(u.getUserName())).findFirst();
-        return user.isPresent()?user.get():null;
+        Optional<User> user = users.stream().filter(u -> username.equals(u.getUserName())).findFirst();
+        return user.isPresent() ? user.get() : null;
 
     }
 
@@ -66,7 +66,7 @@ public class Library {
                 if (!f.isPresent()) {
                     books.add(book);
                     System.out.println("Book " + book.getName() + " Added to library by User:" + auth.getUser().getUserName());
-                }else{
+                } else {
                     System.out.println("Book " + book.getName() + " already in");
                 }
             } else {
@@ -107,6 +107,17 @@ public class Library {
 
     public ArrayList<Book> getBooks() {
         return books;
+    }
+    
+    public String[][] getAllBooksAsTableData(){
+        String[][] data=new String[books.size()+1][5];
+        data[0]=Book.getTableHeader();
+        int x=1;
+        for (Book book : books) {
+            data[x]=book.propertyList();
+            x++;
+        }
+        return data;
     }
 
     public ArrayList<User> getUsers() {
