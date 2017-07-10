@@ -7,13 +7,13 @@ import java.util.Date;
  *
  * @author Shaksham Kapoor
  */
-public class Books 
+public class Book 
 {
     String name, author;
     int isbn, pgcount;
     Date date;
     
-    public Books(String name, String auth, int isbn, int pg, Date d)
+    public Book(String name, String auth, int isbn, int pg, Date d)
     {
         this.name = name;
         this.author = auth;
