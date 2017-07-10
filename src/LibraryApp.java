@@ -11,12 +11,10 @@ import com.library.backlog.*;
  *
  */
 public class LibraryApp {	
-	public static UserRole mRole;
 	public static Library library = new Library();
-	public static ArrayList<User> userList;
-	
+	ArrayList<User> userList;
 	public static  void main(String[] args) {
-		library.addAdmin(userList);
+		library.addAdmin();
 		
 		Scanner sc = new Scanner(System.in);
 		System.out.println("please enter your user name: ");

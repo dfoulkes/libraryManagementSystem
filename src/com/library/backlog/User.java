@@ -30,20 +30,5 @@ public class User {
 	public static UserRole getRole(){
 		return role;
 	}
-	
 
-	
-	//adding user
-	public void addNewUser(ArrayList<User> userList){
-		
-		User newUser = new User(UserRole.USER, username, password);
-		
-		if(userList.contains(newUser)){
-			System.out.println("The user already exist, please enter another");
-		}
-		else{
-			userList.add(newUser);
-			}
-		}
-	
 	}//end of class USer
