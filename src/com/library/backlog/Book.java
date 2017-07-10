@@ -13,17 +13,14 @@ public class Book {
 	 * 				Book can be return in TIME
 	 */
 	
-	
 	private String isbn;
 	private String title;
 	private boolean checkedOut = false;
-	
 	
 	public Book(String isbn, String title){
 		this.isbn = isbn;
 		this.title = title;
 		}
-	
 	
 	//getter isbn
 	public String getIsbn(){

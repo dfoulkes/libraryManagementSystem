@@ -11,18 +11,29 @@ import com.library.backlog.*;
  *
  */
 public class LibraryApp {	
+	public static UserRole mRole;
+	public static Library library = new Library();
+	public static ArrayList<User> userList;
 	
 	public static  void main(String[] args) {
+		library.addAdmin(userList);
+		
 		Scanner sc = new Scanner(System.in);
 		System.out.println("please enter your user name: ");
-		String adminUsername = sc.nextLine();
+		String Username = sc.nextLine();
 		System.out.println("Please enter your password: ");
-		String adminPassword = sc.nextLine(); 
+		String Password = sc.nextLine(); 
 		sc.close();
 		
-		User adminstrativeUser = new User(UserRole.ADMIN, "Tayyab", "adminpass");
-		adminstrativeUser.login();
+		library.login(Username, Password);
 		
+		
+		
+		 //////////////better would be if I use exception here book not found
+		
+		//adminstrativeUser.login();
+		
+		//I'll do alot changes here as soon as i get a fresh mind of monday may be 
 		
 		}
 	}
