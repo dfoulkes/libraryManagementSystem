@@ -11,8 +11,14 @@ import com.library.backlog.*;
  *
  */
 public class LibraryApp {	
+	
+	
 	public static Library library = new Library();
-	ArrayList<User> userList;
+
+	
+	
+	
+	
 	public static  void main(String[] args) {
 		library.addAdmin();
 		

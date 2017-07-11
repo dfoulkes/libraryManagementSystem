@@ -99,15 +99,14 @@ public class Library {
 		
 		
 		
+		@SuppressWarnings("unused")
 		public void login(String inputUsername, String inputPassword){
 			
-			User userLogin = new User(User.getRole(), inputUsername, inputPassword);
+			User userLogin = null;
 			
-			if(userList.contains(userLogin)){
-				for (User users: userList){
-					if(inputUsername.equals(users.getUsername()) && inputPassword.equals(users.getPassword())){
-						if(users.getRole().equals(UserRole.ADMIN)){
-							
+			if(userLogin!= null && userLogin.getRole().equals(UserRole.ADMIN)){
+				for (User u: userList){
+					if(u.getUsername().equals(inputUsername) && u.getPassword().equals(inputPassword)){							
 							System.out.println("You have successfully logged in as a admin and you can perform the forlowing tasks");
 							String input;
 					//	do{
@@ -156,7 +155,8 @@ public class Library {
 					}
 					
 					else
-						if(users.getRole().equals(UserRole.USER)){
+						if(userLogin!= null && userLogin.getRole().equals(UserRole.USER)){
+
 							//do something
 							// assigning operation
 							
@@ -168,13 +168,12 @@ public class Library {
 						}//end of if statement after enhanced loop
 					}//end of enhanced for loop
 				}//end of out if 
-			}//end of login method///////////////better would be if I use exception here book not found
+			//}//end of login method///////////////better would be if I use exception here book not found
 
 
-		public ArrayList<User> addAdmin(){
+		public void addAdmin(){
 			User administrativeUser = new User(UserRole.ADMIN, "Tayyab", "adminpass");			
 			userList.add(administrativeUser);
-			return userList;
 		}
 		
 		//adding user
