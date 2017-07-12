@@ -10,13 +10,14 @@ public class Library {
     Book book;
     ArrayList<User> userList;
     private UserRole role;
-    String usernameEntered;
+   // String usernameEntered;
     String passwordEntered;
     private List<Book> bookList;
     // actually we doing this here:
     Scanner scanner = new Scanner(System.in);
     // List<Book> bookList = new ArrayList<Book>(); 
     // List is an interface and ArrayList is the implementation of it, List gives more flexibility than an ArrayList and less bugs
+    
     
     
     public Library(){
@@ -44,6 +45,11 @@ public class Library {
             
         //searching for a book
         public void search(){
+            for (Book allBooks: bookList){
+            	System.out.println("Title: " + allBooks.getTitle() + "    " + "Isbn" + allBooks.getIsbn());
+            }
+            
+            System.out.println("To checkout a book: ");
             
             Scanner reader = new Scanner(System.in);  // Reading from System.in
             System.out.println("Enter book title:");
@@ -95,11 +101,13 @@ public class Library {
             String username=null;
             String password=null;
             UserRole role=null;
-            
+            String input = "";
+            while (!input.equals("Quit")) {   
             //if(userLogin!= null && userLogin.getRole().equals(UserRole.ADMIN)){ //<- not like this@Mou-Comment
-                for (User u: userList) {//@Mou-Comment start the login method directly with searching the userList for Username & Password
+           
+            for (User u: userList) {//@Mou-Comment start the login method directly with searching the userList for Username & Password
                     if (u.getUsername().equals(inputUsername) && u.getPassword().equals(inputPassword)) {
-                        System.out.println("You have successfully logged in as a admin and you can perform the forlowing tasks");
+                        System.out.println("You have successfully logged in and you can perform the forlowing tasks");
                         /*
                         @Mou-Comment here where the program knows there is a user with this data so we bring all user data then break the loop
                         */
@@ -110,9 +118,9 @@ public class Library {
                         break;
                     }
                 }
-                    if(username!=null&& role.equals(UserRole.ADMIN)){
-                        String input="";
-                        while (!input.equals("Quit")) {
+                    if(username!=null && role.equals(UserRole.ADMIN)){
+                    	
+
                             System.out.println("To add new user enter: addNewUser");
                             System.out.println("To add new book enter: addNewBook");
                             System.out.println("For searching a book please enter: searchBooks");
@@ -121,6 +129,7 @@ public class Library {
                             System.out.println("\n please enter your command:");
                             
                             input = scanner.nextLine();
+                            
                             switch (input){
                                 case "addNewUser":
                                     String u, p, r;
@@ -132,6 +141,10 @@ public class Library {
                                     System.out.println("addNewUser: Please enter Role");
                                     r = scanner.nextLine();
                                     
+                                    while ((r == "USER" || r =="ADMIN")){
+                                    	System.out.println("addNewUser: Please enter Role again:");
+                                        r = scanner.nextLine();
+                                    }
                                     if(r.equals("Admin"))mRole = UserRole.ADMIN;
                                     else
                                     	if(r.equals("User"))mRole = UserRole.USER;
@@ -159,19 +172,21 @@ public class Library {
                                 	
                                 case "Quit":
                                 	System.out.println("Program terminated");
-                                default: System.out.println(" Wrong command!"); break;
+                                default: System.out.println(" Wrong command!"); 
+                                break;
                             }
                         }
-                    }
                     
                     else if(userLogin!= null && userLogin.getRole().equals(UserRole.USER)){
                             //do something
                             // assigning operation
                             
-                            System.out.println("You have successfully logged in as a admin and you can perform the forlowing tasks");
+                            System.out.println("You have successfully logged in as a user and you can perform the forlowing tasks");
                             System.out.println("For searching a book please enter: SEARCH");
                             
-                            }//end of inner if statement
+                            
+                            }
+            }//end of inner if statement
                         }//end of if statement after enhanced loop
             //}//end of login method///////////////better would be if I use exception here book not found
         //@Mou-Comment no need for this, just use addNewUser()
