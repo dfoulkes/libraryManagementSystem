@@ -1,3 +1,5 @@
+package libraryassign;
+
 import java.util.Date;
 import java.util.Scanner;
 
@@ -8,19 +10,29 @@ import java.util.Scanner;
 public class LibraryAssign 
 {
     private static LibraryFunc libf  = new LibraryFunc();
+    private static UserDetails user  = new UserDetails();
     
     public static void main(String[] args) 
     {
         Scanner scan  = new Scanner(System.in);
         System.out.println("----------------Welcome to Library Management System-----------------------");
         
+        //adding few books
         Book book = new Book("StatisticalLearning-1", "Freedie and Hestie", 978146147, 440, new Date());
         Book book1 = new Book("StatisticalLearning-2", "Freedie and Hestie", 978146148, 1020, new Date());
         libf.addBook(book);
         libf.addBook(book1);
         
+        //adding a few users
+        User use = new User("Shaksham Kapoor", 131369);
+        User use1 = new User("Charchit Kapoor", 161207);
+        user.addUser(use);
+        user.addUser(use1);
+        
         System.out.println("List of available books in the library : ");
         viewLibrary();
+        System.out.println("Enrolled Users in the library : ");
+        viewUsers();
         
         //Deciding whether the user is Admin or Any other User (who want a book or will return a book or will simply search for a book)
         System.out.println("Please select your role : ");
@@ -42,14 +54,17 @@ public class LibraryAssign
                     if(user.equals(username) && pass.equals(password))
                     {
                         //ask whether the admin wants to add a new book to the libary
-                        System.out.println("Do you want to add a new book ?(y/n) ");
+                        System.out.println("Do you want to add a new book or a new user ?(B (for book)/U (for User)) ");
                         String choice = scan.next();
                         do
                         {
                             if(choice.equals("n"))
                                 break;
                             //calling the function to add new books to the library
-                            choice = addNewBook("admin");
+                            if(choice.equals("B"))
+                                choice = addNewBook("admin");
+                            else if(choice.equals("U"))
+                                choice = addNewUser();
                         }while(choice.equals("n") != true);   
                     }
                     else //wrong credentials means FRAUD !!!!!
@@ -58,6 +73,7 @@ public class LibraryAssign
                         System.exit(0);
                     }
                     viewLibrary();
+                    viewUsers();
                     break;
             
             case 2: System.out.println("Welcome User !!!");
@@ -78,6 +94,7 @@ public class LibraryAssign
                         if(remove == true)
                         {
                             System.out.println("One copy of the book has been issued!!!");
+                            System.out.println("Return the book wihtin 3 days, otherwise I will beat the hell out of you and will fine you !!!!");
                             viewLibrary();// check whether the book has been removed from the libary or not
                         }
                         else
@@ -148,5 +165,33 @@ public class LibraryAssign
             return null;
         
         return null;
+    }
+
+    private static String addNewUser() 
+    {
+        Scanner scn = new Scanner(System.in);
+        //User name
+        System.out.print("User name: ");
+        String name = scn.next();
+        //User Id
+        System.out.print("ID: ");
+        String num = scn.next();
+        int Id = Integer.parseInt(num);
+        
+        User users = new User(name, Id);
+        //Adding the book to the library
+        user.addUser(users);
+        
+        System.out.println("Do you want to add another book or another user ?(B (for Book)/ U (for User) ");
+        String choice = scn.next();
+        return choice;
+    }
+    
+    public static void viewUsers()
+    {
+        if(user.getUsers().isEmpty())
+            System.out.println("Sorry! the library is currently empty.Nobody is enrolled");
+        else
+            user.getUsers().forEach(System.out::println);
     }
 }
