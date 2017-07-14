@@ -1,3 +1,5 @@
+package libraryassign;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -8,7 +10,7 @@ import java.util.Date;
 public class Book 
 {
     String name, author;
-    Integer isbn, pgcount;
+    int isbn, pgcount;
     Date date;
     
     public Book(String name, String auth, int isbn, int pg, Date d)
@@ -30,7 +32,7 @@ public class Book
         this.name = name;
     }
 
-    public Integer getIsbn()
+    public int getIsbn() 
     {
         return isbn;
     }
