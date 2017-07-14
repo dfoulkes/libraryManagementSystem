@@ -1,3 +1,5 @@
+package libraryassign;
+
 import java.util.ArrayList;
 
 /**
@@ -42,16 +44,13 @@ public class LibraryFunc
     
     public boolean remove(String b)
     {
-        boolean remove = false;
-        for(Book bk : books)
+        boolean issue = books.stream().filter(aBook -> b.equals(aBook.getName())).findFirst().isPresent();
+
+        if(issue)
         {
-            if(bk.getName().equals(b))
-            {
-                books.remove(b);
-                remove = true;
-            }
+            books.remove(b);
         }
-        return remove;
+        return issue;
     }
     
     public ArrayList<Book> getBooks() 
